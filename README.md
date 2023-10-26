@@ -6,11 +6,6 @@ Customers have asked how they can migrate their users from the license included 
 
 This repository contains the supporting scripts for the AWS Desktop and Application Streaming blog article [Automate removal of license included Microsoft Office for Amazon WorkSpaces](https://aws.amazon.com/blogs/desktop-and-application-streaming/UPDATE_ME/). Please refer to the blog article for additional guidance on deploying the scripts provided in this repository. 
 
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
-
 ## Security
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
