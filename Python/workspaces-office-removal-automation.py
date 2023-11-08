@@ -71,7 +71,7 @@ def lambda_handler(event, context):
     config = Config(
        retries = {
           'max_attempts': 10,
-          'mode': 'adaptive'
+          'mode': 'standard'
        }
     )        
 
