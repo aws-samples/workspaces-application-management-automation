@@ -42,6 +42,7 @@ import json
 import boto3
 import logging
 import os
+from botocore.config import Config
 
 
 def lambda_handler(event, context):
@@ -66,7 +67,16 @@ def lambda_handler(event, context):
     else:
         office_app_id = "UPDATE_APPID"
 
-    workspaces_client = boto3.client("workspaces")
+    # Add exponential backoff and retries        
+    config = Config(
+       retries = {
+          'max_attempts': 10,
+          'mode': 'adaptive'
+       }
+    )        
+
+    # Create boto3 WorkSpaces client using backoff config
+    workspaces_client = boto3.client("workspaces", config=config)
 
     ## Generate the list of application packages to get their Ids
     ## Uncomment below to view the current list of Ids
