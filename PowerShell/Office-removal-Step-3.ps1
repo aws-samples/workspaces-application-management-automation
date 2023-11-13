@@ -28,6 +28,12 @@ $wsData = Import-Csv $CSV_Input
 foreach ($workSpace in $wsData){
     if ($workSpace.ApplicationId -ne ""){
         Write-Host "Starting Publish for: " $workSpace.WorkSpaceId
-        Publish-WKSWorkspaceApplication -WorkspaceId $workSpace.WorkSpaceId -Region $region
+        try{
+            $callBlock = "Publish-WKSWorkspaceApplication -WorkspaceId $workSpace.WorkSpaceId -Region $region"
+            $scriptblock = [Scriptblock]::Create($callBlock)
+            $appDetails = Invoke-Command -scriptblock $scriptblock
+        }Catch{
+            write-host $_
+        }
     }
 } 
