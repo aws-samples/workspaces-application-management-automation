@@ -24,7 +24,7 @@ $CSV_Output = "c:\temp\wsApps.csv"
 # The WorkSpaces directory Id
 $directoryId = "d-XXXXXXXXXX"
 
-$WorkSpacesDDB = @()
+$WorkSpacesList = @()
 
 # Get all of the WorkSpaces in a directory and region
 $RegionalWks = Get-WKSWorkSpaces -Region $region -DirectoryId $directoryId
@@ -49,18 +49,36 @@ foreach ($Wks in $RegionalWks){
             $app=""
             $appDetails=""
 
-            # Check to see if the WorkSpace has Office installed
-            $app = Get-WKSWorkspaceAssociation -WorkspaceId $Wks.WorkspaceId -AssociatedResourceType APPLICATION -Region $region
-            if ($app -ne ""){
-                $appDetails = Get-WKSApplication -ApplicationId $app.AssociatedResourceId
-                write-host $appDetails.Description
+            # First the associations betweens applications and the specified WorkSpace.
+            $wsID =$Wks.WorkspaceId
+            $app=""
+            try{
+                # To get the associations Get-WKSWorkspaceAssociation will be called with the WorkSpaceId
+                # https://docs.aws.amazon.com/powershell/latest/reference/items/Get-WKSWorkspaceAssociation.html
+                $callBlock = "Get-WKSWorkspaceAssociation -WorkspaceId $wsID -AssociatedResourceType APPLICATION -Region $region"
+                $scriptblock = [Scriptblock]::Create($callBlock)
+                $app = Invoke-Command -scriptblock $scriptblock
+         
+            }Catch{
+                write-host $_
+            }
+            $appResourceId=$app.AssociatedResourceId
+            if ($appResourceId){
+                try{
+                    $callBlock = "Get-WKSApplication -ApplicationId $appResourceId"
+                    $scriptblock = [Scriptblock]::Create($callBlock)
+                    $appDetails = Invoke-Command -scriptblock $scriptblock
+         
+                }Catch{
+                    write-host $_
+                }
             }
             $entry | Add-Member -NotePropertyName "ApplicationId" -NotePropertyValue $app.AssociatedResourceId
             
             $entry | Add-Member -NotePropertyName "ApplicationsInstalled" -NotePropertyValue $appDetails.Description
 
-            $WorkSpacesDDB += $entry
+            $WorkSpacesList  += $entry
 }
 
 # Output results to CSV file
-$WorkSpacesDDB | Export-Csv -Path $CSV_Output -NoTypeInformation 
+$WorkSpacesList  | Export-Csv -Path $CSV_Output -NoTypeInformation 
