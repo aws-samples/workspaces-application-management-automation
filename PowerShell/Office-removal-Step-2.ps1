@@ -28,8 +28,10 @@ $wsData = Import-Csv $CSV_Input
 foreach ($workSpace in $wsData){
     if ($workSpace.ApplicationId -ne ""){
         Write-Host "Starting unregistration for: " $workSpace.WorkSpaceId
+        $applicationId = $workSpace.ApplicationId
+        $workSpaceId = $workSpace.WorkSpaceId
         try{
-            $callBlock = "unregister-WKSWorkspaceApplication -WorkspaceId $workSpace.WorkSpaceId -ApplicationId $workSpace.ApplicationId -Region $region"
+            $callBlock = "unregister-WKSWorkspaceApplication -WorkspaceId $workSpaceId -ApplicationId $applicationId -Region $region"
             $scriptblock = [Scriptblock]::Create($callBlock)
             $appDetails = Invoke-Command -scriptblock $scriptblock
         }Catch{
