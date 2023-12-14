@@ -14,30 +14,6 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-## Upgrade Boto3, v.1.28 required for WorkSpaces application management API
-## Adds ~5 seconds to execution time
-## AWS Lambda with Python 3.11 defaults to Boto3 v1.27
-## Remove once AWS Lambda defaults to > v1.28
-import sys
-from pip._internal import main
-
-main(
-    [
-        "install",
-        "-I",
-        "-q",
-        "boto3",
-        "--target",
-        "/tmp/",
-        "--no-cache-dir",
-        "--disable-pip-version-check",
-    ]
-)
-sys.path.insert(0, "/tmp/")
-
-
-## Begin main Lambda function
 import json
 import boto3
 import logging
